@@ -152,3 +152,9 @@ REST_USE_JWT = True
 JWT_AUTH = {
     "JWT_EXPIRATION_DELTA": datetime.timedelta(hours=48),
 }
+
+REST_AUTH_REGISTER_PERMISSION_CLASSES = ('rest_framework.permissions.IsAdminUser',)
+
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'auth_app.serializers.GroupRegisterSerializer',
+}

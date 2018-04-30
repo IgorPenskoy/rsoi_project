@@ -1,0 +1,6 @@
+ADMIN_USERNAME = "admin"
+ADMIN_EMAIL = "admin@example.com"
+MENTOR_GROUP_NAME = "mentor"
+STUDENT_GROUP_NAME = "student"
+PERMISSION_MODEL_NAME = "global_permission"
+APP_LABEL = "auth_app"
