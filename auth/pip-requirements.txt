@@ -9,7 +9,7 @@ djangorestframework==3.8.2
 idna==2.6
 Markdown==2.6.11
 oauthlib==2.0.7
-psycopg2==2.7.4
+psycopg2-binary==2.7.4
 python3-openid==3.1.0
 pytz==2018.4
 requests==2.18.4
