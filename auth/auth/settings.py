@@ -145,3 +145,7 @@ SITE_ID = 1
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 OLD_PASSWORD_FIELD_ENABLED = True
+
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'auth_app.serializers.GroupRegisterSerializer',
+}
