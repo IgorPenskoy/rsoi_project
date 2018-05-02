@@ -7,6 +7,8 @@ from rest_framework.status import HTTP_204_NO_CONTENT
 from rest_framework.exceptions import NotFound
 from rest_auth.views import LogoutView
 
+from .functions import check_permission_answer
+
 
 class IndexView(APIView):
     authentication_classes = ()
@@ -50,3 +52,87 @@ class RestoreUserView(APIView):
             return Response()
         except User.DoesNotExist:
             raise NotFound
+
+
+class CanAddMentor(APIView):
+    def get(self, request):
+        return check_permission_answer(request.user, "can_add_mentor")
+
+
+class CanAddStudent(APIView):
+    def get(self, request):
+        return check_permission_answer(request.user, "can_add_student")
+
+
+class CanEditStudentInfo(APIView):
+    def get(self, request, pk):
+        if request.user.pk == int(pk):
+            return Response()
+        else:
+            return check_permission_answer(request.user, "can_edit_student_info")
+
+
+class CanEditMentorInfo(APIView):
+    def get(self, request, pk):
+        if request.user.pk == int(pk):
+            return Response()
+        else:
+            return check_permission_answer(request.user, "can_edit_mentor_info")
+
+
+class CanDeleteUser(APIView):
+    def get(self, request):
+        return check_permission_answer(request.user, "can_delete_user")
+
+
+class CanEditDistribution(APIView):
+    def get(self, request):
+        return check_permission_answer(request.user, "can_edit_distribution")
+
+
+class CanMakeDistribution(APIView):
+    def get(self, request):
+        return check_permission_answer(request.user, "can_make_distribution")
+
+
+class CanAddWork(APIView):
+    def get(self, request):
+        return check_permission_answer(request.user, "can_add_work")
+
+
+class CanDeleteWork(APIView):
+    def get(self, request):
+        return check_permission_answer(request.user, "can_delete_work")
+
+
+class CanDeleteDirection(APIView):
+    def get(self, request):
+        return check_permission_answer(request.user, "can_delete_direction")
+
+
+class CanAddRepository(APIView):
+    def get(self, request):
+        return check_permission_answer(request.user, "can_add_repository")
+
+
+class CanAddDirection(APIView):
+    def get(self, request):
+        return check_permission_answer(request.user, "can_add_direction")
+
+
+class CanEditWork(APIView):
+    def get(self, request):
+        return check_permission_answer(request.user, "can_edit_work")
+
+
+class CanWatchStudentList(APIView):
+    def get(self, request):
+        return check_permission_answer(request.user, "can_watch_student_list")
+
+
+class CanWatchStudentInfo(APIView):
+    def get(self, request, pk):
+        if request.user.pk == int(pk):
+            return Response()
+        else:
+            return check_permission_answer(request.user, "can_watch_student_info")
