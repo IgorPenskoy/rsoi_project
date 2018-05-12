@@ -13,4 +13,8 @@ urlpatterns = [
     path('student/', views.StudentListView.as_view(), name='student_list'),
     path('student/group/<str:group>/', views.StudentByGroupView.as_view(), name='student_by_group'),
     path('student/<pk>/', views.StudentDetailView.as_view(), name='student_detail'),
+    path('distribution/', views.DistributionListView.as_view(), name='distribution_list'),
+    path('distribution/auto/<int:work_id>/<str:group>/', views.DistributionAutoView.as_view(),
+         name='distribution_auto'),
+    path('distribution/<pk>/', views.DistributionDetailView.as_view(), name='distribution_detail'),
 ]

@@ -84,3 +84,14 @@ class Student(models.Model):
 
     class Meta:
         ordering = ('group', 'surname', 'name', 'patronymic',)
+
+
+class Distribution(models.Model):
+    work = models.ForeignKey(Work, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    mentor = models.ForeignKey(Mentor, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('work', 'student',)
+        ordering = ('work__title', 'student__group', 'student__surname',
+                    'student__name', 'student__patronymic',)
