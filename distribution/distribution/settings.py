@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'distribution_app.apps.DistributionAppConfig',
     'rest_framework',
     'rest_framework.authtoken',
+    'autofixture',
 ]
 
 MIDDLEWARE = [
@@ -125,3 +126,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+DDF_DEFAULT_DATA_FIXTURE = 'static_sequential'
