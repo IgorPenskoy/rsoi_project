@@ -1,3 +1,12 @@
 from django.db import models
 
-# Create your models here.
+
+class Repository(models.Model):
+    url = models.URLField(verbose_name="URL репозитория")
+    username = models.CharField(max_length=150, verbose_name=u"Имя пользователя Gitlab")
+    repository = models.CharField(max_length=150, verbose_name=u"Название репозитория")
+    last_activity = models.DateTimeField(auto_now_add=True,
+                                         verbose_name=u"Время послденей активности")
+
+    class Meta:
+        ordering = ('username', 'repository',)
