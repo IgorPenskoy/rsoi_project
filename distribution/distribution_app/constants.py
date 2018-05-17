@@ -61,3 +61,8 @@ INIT_SEMESTER = "1"
 SEMESTER_CHOICES = tuple(
     [(str(i), str(i)) for i in range(1, 3)]
 )
+
+# Стоимость совпадений предпочтений
+
+SCIENCE_MATCH = 1
+PERSONAL_MATCH = 3
