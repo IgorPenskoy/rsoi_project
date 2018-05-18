@@ -125,3 +125,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'aggregation_app.exceptions.custom_exception_handler'
+}
+
+AUTH_URL = "http://localhost:8001/"
+DISTRIBUTION_URL = "http://localhost:8002/"
+REPOSITORY_URL = "http://localhost:8003/"
