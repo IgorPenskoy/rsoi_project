@@ -21,7 +21,7 @@ from .functions import distribution_auto
 
 class IndexView(APIView):
     def get(self, request):
-        return Response("DISTRIBUTION SERVICE")
+        return Response()
 
 
 class DirectionListView(ListCreateAPIView):
