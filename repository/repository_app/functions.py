@@ -23,11 +23,12 @@ def update_repository_info(repository_id):
                                                        last_activity=project.last_activity_at)
 
 
-def create_repository(repository_name, private_token):
+def create_repository(repository_name, private_token, user_id):
     gl = get_gitlab_instance_auth(private_token)
     project = gl.projects.create({'name': repository_name, 'visibility': 'public'})
     Repository.objects.create(id=project.id,
                               url=project.web_url,
                               username=project.owner["username"],
                               repository=project.name,
-                              last_activity=project.last_activity_at)
+                              last_activity=project.last_activity_at,
+                              user_id=user_id)

@@ -88,6 +88,13 @@ from .functions import delete_dist
 ####################################################################################################
 
 
+from .functions import get_repo
+from .functions import create_repository
+
+
+####################################################################################################
+
+
 from .functions import can_change_student
 from .functions import can_change_mentor
 from .functions import can_add_work
@@ -98,6 +105,7 @@ from .functions import can_edit_direction
 from .functions import can_delete_direction
 from .functions import can_edit_distribution
 from .functions import can_delete_distribution
+from .functions import can_create_repository
 
 
 ####################################################################################################
@@ -677,6 +685,44 @@ class DistributionView(APIView):
                 return success_response(status=HTTP_204_NO_CONTENT)
             elif distribution_response.status_code == codes.not_found:
                 raise NotFound
+            else:
+                raise InternalError
+        elif auth_response.status_code == codes.unauthorized:
+            raise NotAuthenticated
+        elif auth_response.status_code == codes.forbidden:
+            raise PermissionDenied
+        else:
+            raise InternalError
+
+
+####################################################################################################
+
+
+class RepositoryView(APIView):
+    @catch_exceptions
+    def get(self, request, user_id):
+        repository_response = get_repo(user_id)
+        print(repository_response.content)
+        if repository_response.status_code == codes.ok:
+            return success_response(detail=repository_response.json())
+        elif repository_response.status_code == codes.not_found:
+            raise NotFound
+        else:
+            raise InternalError
+
+    @catch_exceptions
+    def post(self, request, user_id):
+        private_key = validate_field("private_key", request.data.get("private_key"), True, True)
+        repository_name = validate_field("repository_name", request.data.get("repository_name"), True, True)
+
+        auth_header = get_auth_header(request)
+        auth_response = can_create_repository(auth_header)
+        if auth_response.status_code == codes.ok:
+            repository_response = create_repository(user_id, private_key, repository_name)
+            if repository_response.status_code == codes.ok:
+                return success_response(message=repository_response.json())
+            elif repository_response.status_code == codes.bad_request:
+                raise ValidationError(detail=repository_response.json())
             else:
                 raise InternalError
         elif auth_response.status_code == codes.unauthorized:

@@ -21,4 +21,5 @@ urlpatterns = [
     path('distribution/work/<int:work_id>/group/<str:group>/', views.DistributionListView.as_view(),
          name='distribution_list'),
     path('distribution/<pk>/', views.DistributionView.as_view(), name='distribution_detail'),
+    path('repository/<int:user_id>/', views.RepositoryView.as_view(), name='repository'),
 ]

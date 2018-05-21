@@ -6,7 +6,8 @@ class Repository(models.Model):
     username = models.CharField(max_length=150, verbose_name=u"Имя пользователя Gitlab")
     repository = models.CharField(max_length=150, verbose_name=u"Название репозитория")
     last_activity = models.DateTimeField(auto_now_add=True,
-                                         verbose_name=u"Время послденей активности")
+                                         verbose_name=u"Время последней активности")
+    user_id = models.IntegerField(verbose_name="ID пользователя")
 
     class Meta:
         ordering = ('username', 'repository',)

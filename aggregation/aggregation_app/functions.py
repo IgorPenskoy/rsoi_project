@@ -14,6 +14,7 @@ from .transliterate import transliterate
 
 AUTH_URL = settings.AUTH_URL
 DISTRIBUTION_URL = settings.DISTRIBUTION_URL
+REPOSITORY_URL = settings.REPOSITORY_URL
 
 
 ####################################################################################################
@@ -114,6 +115,17 @@ def put_distribution(url, request_json=None):
 
 def delete_distribution(url, request_json=None):
     return delete(DISTRIBUTION_URL + url, request_json)
+
+
+####################################################################################################
+
+
+def get_repository(url, params=None):
+    return get(REPOSITORY_URL + url, params)
+
+
+def post_repository(url, request_json=None):
+    return post(REPOSITORY_URL + url, request_json)
 
 
 ####################################################################################################
@@ -336,6 +348,22 @@ def delete_dist(pk):
 ####################################################################################################
 
 
+def get_repo(user_id):
+    return get_repository("repository/%s/" % str(user_id))
+
+
+def create_repository(user_id, private_key, name):
+    request_json = {
+        "user_id": user_id,
+        "private_key": private_key,
+        "repository_name": name,
+    }
+    return post_repository("repository/create/", request_json=request_json)
+
+
+####################################################################################################
+
+
 def can_change_student(pk, auth_header):
     return get_auth("check/can_edit_student_info/%s/" % str(pk), auth_header=auth_header)
 
@@ -374,3 +402,7 @@ def can_edit_distribution(auth_header):
 
 def can_delete_distribution(auth_header):
     return get_auth("check/can_delete_distribution/", auth_header=auth_header)
+
+
+def can_create_repository(auth_header):
+    return get_auth("check/can_add_repository/", auth_header=auth_header)
