@@ -3,6 +3,7 @@ from numpy import subtract
 from random import SystemRandom
 
 from scipy.optimize import linear_sum_assignment
+from rest_framework.exceptions import ValidationError
 
 from .models import Work
 from .models import Student
@@ -21,8 +22,14 @@ def distribution_auto(work_id, group):
     students_count = len(students)
     mentors_count = len(mentors)
 
+    if students_count == 0:
+        raise ValidationError(detail=u"В группе %s отсутствуют студенты" % group)
+    if mentors_count == 0:
+        raise ValidationError(detail=u"Отсутствуют руководители")
+
     if students_count > mentors_count:
-        mentors.extend(SystemRandom().sample(mentors, students_count - mentors_count))
+        mentors.extend(SystemRandom().sample(mentors * (students_count - mentors_count),
+                                             students_count - mentors_count))
         mentors_count = len(mentors)
 
     mentors_science_preferences = []

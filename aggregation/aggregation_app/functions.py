@@ -175,13 +175,16 @@ def register_student(uid, name, surname, patronymic, email, group):
     return post_distribution("student/", request_json)
 
 
-def put_student(pk, name, surname, patronymic, email, group):
+def put_student(pk, name, surname, patronymic, email, group,
+                science_preferences, personal_preferences):
     request_json = {
         "name": name,
         "surname": surname,
         "patronymic": patronymic,
         "email": email,
         "group": group,
+        "science_preferences": science_preferences,
+        "personal_preferences": personal_preferences,
     }
     return put_distribution("student/%s/" % str(pk), request_json)
 
@@ -214,7 +217,8 @@ def register_mentor(uid, name, surname, patronymic, email, position, title):
     return post_distribution("mentor/", request_json)
 
 
-def put_mentor(pk, name, surname, patronymic, email, position, title):
+def put_mentor(pk, name, surname, patronymic, email, position, title,
+               science_preferences, personal_preferences):
     request_json = {
         "name": name,
         "surname": surname,
@@ -222,6 +226,8 @@ def put_mentor(pk, name, surname, patronymic, email, position, title):
         "email": email,
         "position": position,
         "title": title,
+        "science_preferences": science_preferences,
+        "personal_preferences": personal_preferences,
     }
     return put_distribution("mentor/%s/" % str(pk), request_json)
 
@@ -233,9 +239,138 @@ def delete_mentor(uid):
 ####################################################################################################
 
 
+def get_work(pk):
+    return get_distribution("work/%s/" % str(pk))
+
+
+def get_work_list():
+    return get_distribution("work/")
+
+
+def create_work(title, course, semester, directions):
+    request_json = {
+        "title": title,
+        "course": course,
+        "semester": semester,
+        "directions": directions,
+    }
+    return post_distribution("work/", request_json)
+
+
+def put_work(pk, title, course, semester, directions):
+    request_json = {
+        "title": title,
+        "course": course,
+        "semester": semester,
+        "directions": directions,
+    }
+    return put_distribution("work/%s/" % str(pk), request_json)
+
+
+def delete_work(uid):
+    return delete_distribution("work/%s/" % str(uid))
+
+
+####################################################################################################
+
+
+def get_direction(pk):
+    return get_distribution("direction/%s/" % str(pk))
+
+
+def get_direction_list():
+    return get_distribution("direction/")
+
+
+def create_direction(title):
+    request_json = {
+        "title": title,
+    }
+    return post_distribution("direction/", request_json)
+
+
+def put_direction(pk, title):
+    request_json = {
+        "title": title,
+    }
+    return put_distribution("direction/%s/" % str(pk), request_json)
+
+
+def delete_direction(pk):
+    return delete_distribution("direction/%s/" % str(pk))
+
+
+####################################################################################################
+
+
+def get_dist(work_id, group):
+    return get_distribution("distribution/work/%s/group/%s/" % (str(work_id), str(group)))
+
+
+def create_dist_auto(work_id, group):
+    return post_distribution("distribution/auto/work/%s/group/%s/" % (str(work_id), str(group)))
+
+
+def create_dist(work_id, student_id, mentor_id):
+    request_json = {
+        "work_id": work_id,
+        "student_id": student_id,
+        "mentor_id": mentor_id,
+    }
+    return post_distribution("distribution/", request_json)
+
+
+def put_dist(pk, work_id, student_id, mentor_id):
+    request_json = {
+        "work_id": work_id,
+        "student_id": student_id,
+        "mentor_id": mentor_id,
+    }
+    return put_distribution("distribution/%s/" % str(pk), request_json)
+
+
+def delete_dist(pk):
+    return delete_distribution("distribution/%s/" % str(pk))
+
+
+####################################################################################################
+
+
 def can_change_student(pk, auth_header):
-    return get_auth("check/can_edit_student_info/%s/" % str(pk), auth_header)
+    return get_auth("check/can_edit_student_info/%s/" % str(pk), auth_header=auth_header)
 
 
 def can_change_mentor(pk, auth_header):
-    return get_auth("check/can_edit_mentor_info/%s/" % str(pk), auth_header)
+    return get_auth("check/can_edit_mentor_info/%s/" % str(pk), auth_header=auth_header)
+
+
+def can_add_work(auth_header):
+    return get_auth("check/can_add_work/", auth_header=auth_header)
+
+
+def can_edit_work(auth_header):
+    return get_auth("check/can_edit_work/", auth_header=auth_header)
+
+
+def can_delete_work(auth_header):
+    return get_auth("check/can_delete_work/", auth_header=auth_header)
+
+
+def can_add_direction(auth_header):
+    return get_auth("check/can_add_direction/", auth_header=auth_header)
+
+
+def can_edit_direction(auth_header):
+    return get_auth("check/can_edit_direction/", auth_header=auth_header)
+
+
+def can_delete_direction(auth_header):
+    return get_auth("check/can_delete_direction/", auth_header=auth_header)
+
+
+def can_edit_distribution(auth_header):
+    return get_auth("check/can_edit_distribution/", auth_header=auth_header)
+
+
+def can_delete_distribution(auth_header):
+    return get_auth("check/can_delete_distribution/", auth_header=auth_header)

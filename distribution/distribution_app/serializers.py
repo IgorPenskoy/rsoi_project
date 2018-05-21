@@ -15,27 +15,78 @@ class DirectionSerializer(ModelSerializer):
 
 
 class WorkSerializer(ModelSerializer):
+    directions_detail = DirectionSerializer(source="directions",
+                                            many=True,
+                                            read_only=True)
+
     class Meta:
         model = Work
-        fields = ('id', 'title', 'course', 'semester', 'directions',)
+        fields = ('id', 'title', 'course', 'semester', 'directions', 'directions_detail',)
+
+
+class MentorForStudentSerializer(ModelSerializer):
+    def to_representation(self, instance):
+        representation = dict()
+
+        representation["id"] = instance.id
+        representation["name"] = "%s %s. %s." % (instance.surname,
+                                                 instance.name[0],
+                                                 instance.patronymic[0])
+
+        return representation
+
+    class Meta:
+        model = Mentor
+        fields = ('id', 'surname', 'name', 'patronymic',)
+
+
+class StudentForMentorSerializer(ModelSerializer):
+    def to_representation(self, instance):
+        representation = dict()
+
+        representation["id"] = instance.id
+        representation["name"] = "%s %s. %s." % (instance.surname,
+                                                 instance.name[0],
+                                                 instance.patronymic[0])
+        representation["group"] = instance.group
+
+        return representation
+
+    class Meta:
+        model = Student
+        fields = ('id', 'surname', 'name', 'patronymic', 'group')
 
 
 class MentorSerializer(ModelSerializer):
     id = IntegerField()
+    science_preferences_detail = DirectionSerializer(source="science_preferences",
+                                                     many=True,
+                                                     read_only=True)
+    personal_preferences_detail = StudentForMentorSerializer(source="personal_preferences",
+                                                             many=True,
+                                                             read_only=True)
 
     class Meta:
         model = Mentor
         fields = ('id', 'surname', 'name', 'patronymic', 'position', 'title',
-                  'email', 'science_preferences', 'personal_preferences', 'description')
+                  'email', 'science_preferences', 'personal_preferences', 'description',
+                  'science_preferences_detail', 'personal_preferences_detail',)
 
 
 class StudentSerializer(ModelSerializer):
     id = IntegerField()
+    science_preferences_detail = DirectionSerializer(source="science_preferences",
+                                                     many=True,
+                                                     read_only=True)
+    personal_preferences_detail = MentorForStudentSerializer(source="personal_preferences",
+                                                             many=True,
+                                                             read_only=True)
 
     class Meta:
         model = Student
         fields = ('id', 'surname', 'name', 'patronymic', 'group', 'email',
-                  'science_preferences', 'personal_preferences',)
+                  'science_preferences', 'personal_preferences',
+                  'science_preferences_detail', 'personal_preferences_detail',)
 
 
 class DistributionSerializer(ModelSerializer):

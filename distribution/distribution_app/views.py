@@ -1,9 +1,10 @@
-from django.shortcuts import redirect
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
+from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import ValidationError
 
 from .models import Direction
 from .models import Work
@@ -81,7 +82,23 @@ class DistributionDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = DistributionSerializer
 
 
+class DistributionGetView(ListAPIView):
+    serializer_class = DistributionSerializer
+
+    def get_queryset(self):
+        work_id = self.kwargs.get("work_id")
+        group = self.kwargs.get("group")
+        return Distribution.objects.filter(work_id=work_id, student__group=group)
+
+
 class DistributionAutoView(APIView):
-    def get(self, request, work_id, group):
-        distribution_auto(work_id, group)
-        return redirect("distribution_list")
+    def post(self, request, work_id, group):
+        try:
+            distribution_auto(work_id, group)
+        except Work.DoesNotExist:
+            raise NotFound
+        except ValidationError as e:
+            raise ValidationError(detail=e.detail)
+        except Exception:
+            raise ValidationError(detail=u"Некорректные входные данные")
+        return Response(u"Распределение успешно сформировано")

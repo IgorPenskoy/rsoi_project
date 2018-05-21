@@ -34,8 +34,11 @@ class DeleteUserView(APIView):
     def delete(self, request, pk, format=None):
         try:
             user = User.objects.get(pk=pk)
-            user.is_active = False
-            user.save()
+            if user.is_active:
+                user.is_active = False
+                user.save()
+            else:
+                raise User.DoesNotExist
             return Response(status=HTTP_204_NO_CONTENT)
         except User.DoesNotExist:
             raise NotFound
