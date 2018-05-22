@@ -1,0 +1,67 @@
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>ИУ7 Распределение</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="manifest" href="{% static 'frontend_app/site.webmanifest' %}">
+    <link rel="apple-touch-icon" href="icon.png">
+
+    <link rel="shortcut icon" href="{% static 'frontend_app/favicon.ico' %}">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="{% static 'frontend_app/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'frontend_app/css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'frontend_app/css/main.css' %}">
+</head>
+
+<body>
+    <!--[if lte IE 9]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+    <![endif]-->
+    <header>
+        <nav class="navbar-custom">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">Главная</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li><a href="/">Распределение</a></li>
+                    <li><a href="/">Работы</a></li>
+                    <li><a href="/">Направления</a></li>
+                    <li><a href="/">Руководители</a></li>
+                    <li><a href="/">Студенты</a></li>
+                    <li><a href="/">Профиль</a></li>
+                    <li><a href="/">Войти</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="content container">
+        {% block content %}
+        {% endblock %}
+    </div>
+    <footer>
+        <div class="navbar-static-bottom">
+            <div class="navbar-inner">
+                    <div class="page-footer">
+                        <p class="tech-support">
+                            МГТУ им. Н.Э. Баумана, ИУ7.
+                        </p>
+                    </div>
+            </div>
+        </div>
+    </footer>
+    <script src="{% static 'frontend_app/js/vendor/modernizr-3.6.0.min.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="{% static 'frontend_app/js/vendor/jquery-3.3.1.min.js' %}"><\/script>')</script>
+    <script src="{% static 'frontend_app/js/plugins.js' %}"></script>
+    <script src="{% static 'frontend_app/js/main.js' %}"></script>
+</body>
+
+</html>

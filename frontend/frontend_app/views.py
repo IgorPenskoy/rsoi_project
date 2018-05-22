@@ -1,5 +1,6 @@
 from django.http.response import HttpResponse
+from django.shortcuts import render
 
 
 def index(request):
-        return HttpResponse(content=b"FRONTEND SERVICE")
+        return render(request, "frontend_app/index.html")
