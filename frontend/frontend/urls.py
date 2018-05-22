@@ -15,6 +15,11 @@ Including another URLconf
 """
 from django.urls import path, include
 
+handler400 = 'frontend_app.views.bad_request_error'
+handler403 = 'frontend_app.views.forbidden_error'
+handler404 = 'frontend_app.views.not_found_error'
+handler500 = 'frontend_app.views.internal_error'
+
 urlpatterns = [
     path('', include('frontend_app.urls')),
 ]

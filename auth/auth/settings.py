@@ -158,3 +158,7 @@ REST_AUTH_REGISTER_PERMISSION_CLASSES = ('rest_framework.permissions.IsAdminUser
 REST_AUTH_REGISTER_SERIALIZERS = {
     'REGISTER_SERIALIZER': 'auth_app.serializers.GroupRegisterSerializer',
 }
+
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'auth_app.serializers.CustomUserDetailsSerializer',
+}

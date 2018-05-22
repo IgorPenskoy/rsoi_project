@@ -144,8 +144,8 @@ class LoginView(APIView):
     @catch_exceptions
     def post(self, request):
         auth_response = login(
-            validate_field("username", request.data.get("username"), True, True),
-            validate_field("password", request.data.get("password"), True, True)
+            request.data.get("username"),
+            request.data.get("password"),
         )
         if auth_response.status_code == codes.ok:
             return success_response(detail=auth_response.json())
@@ -752,5 +752,5 @@ def bad_request_error(request, exception):
 
 
 @api_view(["GET", "POST"])
-def not_found_error(request, exception):
+def forbidden_error(request, exception):
     raise PermissionDenied

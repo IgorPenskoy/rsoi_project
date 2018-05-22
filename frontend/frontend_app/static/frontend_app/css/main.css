@@ -97,21 +97,6 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
-html, body {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-}
-
-.main-title {
-    vertical-align: middle;
-    horizontal-align: middle;
-    margin: 10%;
-    text-align: center;
-    height: 100%;
-    padding: 0;
-}
-
 /* ==========================================================================
    Helper classes
    ========================================================================== */
