@@ -37,7 +37,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="/">Распределение</a></li>
                     <li><a href="/work/">Работы</a></li>
-                    <li><a href="/">Направления</a></li>
+                    <li><a href="/direction/">Направления</a></li>
                     <li><a href="/">Руководители</a></li>
                     <li><a href="/">Студенты</a></li>
                     {% if request.COOKIES.group != "admin" %}
@@ -71,6 +71,7 @@
     <script src="{% static 'frontend_app/js/vendor/modernizr-3.6.0.min.js' %}"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script>window.jQuery || document.write('<script src="{% static 'frontend_app/js/vendor/jquery-3.3.1.min.js' %}"><\/script>')</script>
+    <script src="{% static 'frontend_app/js/js.cookie.js' %}"></script>
     <script src="{% static 'frontend_app/js/plugins.js' %}"></script>
     <script src="{% static 'frontend_app/js/main.js' %}"></script>
     <script src="{% static 'frontend_app/js/jasny-bootstrap.min.js' %}"></script>

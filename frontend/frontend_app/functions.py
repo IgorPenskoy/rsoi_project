@@ -13,6 +13,9 @@ from .constants import SEMESTERS
 AGGREGATION_URL = settings.AGGREGATION_URL
 
 
+#########################################################################################
+
+
 def handle_response(response):
     status_code = response.status_code
     detail = None
@@ -39,6 +42,22 @@ def get_auth_token(request):
     return request.COOKIES.get("auth_token")
 
 
+def error_context(context, error_detail):
+    if error_detail:
+        error_detail = error_detail.items()
+        for field, error in error_detail:
+            context[field + "_error"] = ""
+            if isinstance(error, list):
+                for er in error:
+                    context[field + "_error"] += er + "\n"
+            else:
+                context[field + "_error"] += error
+    return context
+
+
+#########################################################################################
+
+
 def get(url, auth_token=None):
     headers = None
     if auth_token:
@@ -60,6 +79,16 @@ def put(url, request_json=None, auth_token=None):
     return requests.put(AGGREGATION_URL + url, json=request_json, headers=headers)
 
 
+def delete(url, auth_token=None):
+    headers = None
+    if auth_token:
+        headers = {"Authorization": "JWT " + str(auth_token)}
+    return requests.delete(AGGREGATION_URL + url, headers=headers)
+
+
+#########################################################################################
+
+
 def login(username, password):
     reqest_json = {
         "username": username,
@@ -70,6 +99,9 @@ def login(username, password):
 
 def logout(auth_token):
     return post("logout/", auth_token=auth_token)
+
+
+#########################################################################################
 
 
 def get_work_list():
@@ -100,7 +132,12 @@ def post_work(title, course, semester, directions, auth_token):
     return post("work/", request_json, auth_token)
 
 
-def context_work(title=None, course=None, semester=None, directions=None, error_detail=None):
+def delete_work(pk, auth_token):
+    return delete("work/%s/" % str(pk), auth_token)
+
+
+def context_work(title=None, course=None, semester=None,
+                 directions=None, error_detail=None, w_id=None):
     directions = directions or []
     directions_response = get_direction_list()
     directions_response_json = directions_response.json()
@@ -119,6 +156,7 @@ def context_work(title=None, course=None, semester=None, directions=None, error_
         else:
             selected_directions.append(d)
     context = {
+        "id": w_id,
         "title": title or "",
         "course": course or "1",
         "semester": semester or "1",
@@ -127,27 +165,47 @@ def context_work(title=None, course=None, semester=None, directions=None, error_
         "semesters": SEMESTERS,
         "unselected_directions": unselected_directions,
     }
-    if error_detail:
-        error_detail = error_detail.items()
-        for field, error in error_detail:
-            context[field + "_error"] = ""
-            if isinstance(error, list):
-                for er in error:
-                    context[field + "_error"] += er + "  "
-            else:
-                context[field + "_error"] += error
-    return context
+    return error_context(context, error_detail)
+
+
+#########################################################################################
 
 
 def get_direction_list():
     return get("direction/")
 
 
-def set_context(error=None):
-    context = {
-        "error": error,
+def get_direction(pk):
+    return get("direction/%s/" % str(pk))
+
+
+def put_direction(pk, title, auth_token):
+    request_json = {
+        "title": title,
     }
-    return context
+    return put("direction/%s/" % str(pk), request_json, auth_token)
+
+
+def post_direction(title, auth_token):
+    request_json = {
+        "title": title,
+    }
+    return post("direction/", request_json, auth_token)
+
+
+def delete_direction(pk, auth_token):
+    return delete("direction/%s/" % str(pk), auth_token)
+
+
+def context_direction(title=None, error_detail=None, d_id=None):
+    context = {
+        "id": d_id,
+        "title": title or "",
+    }
+    return error_context(context, error_detail)
+
+
+#########################################################################################
 
 
 def check_cookies(request):
@@ -179,6 +237,9 @@ def delete_cookies(response):
     response.delete_cookie("group")
 
     return response
+
+
+#########################################################################################
 
 
 def page_error(request, status, message):

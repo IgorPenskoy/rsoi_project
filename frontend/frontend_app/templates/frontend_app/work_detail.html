@@ -3,14 +3,20 @@
 
 {% block content %}
     {% if request.COOKIES.group == "admin" %}
-        <form class="form-horizontal" role="form" method="post">
+        <form id="change_form" class="form-horizontal" role="form" method="post">
             {% csrf_token %}
+            <input hidden id="delete_input" name="delete_input" value="">
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <div class="pull-right">
                         <a href="{% url 'work_list' %}" class="btn btn-default">Назад</a>
                         <button type="submit" class="btn btn-primary btn-save">Сохранить</button>
                     </div>
+                    {% if id %}
+                        <div class="pull-left">
+                            <button id="work_delete_button" type="button" class="btn btn-danger">Удалить</button>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
 
@@ -121,6 +127,14 @@
         removeAllLabel: "Убрать все",
         selectedListLabel: "Выбранные направления",
         nonSelectedListLabel: "Оставшиеся направления",
+    });
+</script>
+<script>
+    $('#work_delete_button').on('click', function() {
+        if (confirm("Удалить?")) {
+            $('#delete_input').val("delete");
+            $('#change_form').submit();
+        }
     });
 </script>
 {% endblock %}

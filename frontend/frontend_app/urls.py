@@ -9,4 +9,7 @@ urlpatterns = [
     path('work/', views.WorkListView.as_view(), name='work_list'),
     path('work/new/', views.WorkNewView.as_view(), name='work_new'),
     path('work/<pk>/', views.WorkDetailView.as_view(), name='work_detail'),
+    path('direction/', views.DirectionListView.as_view(), name='direction_list'),
+    path('direction/new/', views.DirectionNewView.as_view(), name='direction_new'),
+    path('direction/<pk>/', views.DirectionDetailView.as_view(), name='direction_detail'),
 ]

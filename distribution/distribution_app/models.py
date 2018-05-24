@@ -15,7 +15,14 @@ from .error_messages import field_error_messages
 
 
 class Direction(models.Model):
-    title = models.CharField(max_length=500, unique=True, verbose_name=u"Название")
+    title = models.CharField(
+        max_length=500,
+        unique=True,
+        verbose_name=u"Название",
+        error_messages=field_error_messages(
+            unique=u"Направление с таким названием уже существует"
+        )
+    )
 
     class Meta:
         ordering = ('title',)

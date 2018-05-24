@@ -7,10 +7,10 @@ from requests import codes
 
 #########################################################################################
 
+
 from .functions import login
 from .functions import logout
 from .functions import get_auth_token
-from .functions import set_context
 from .functions import handle_response
 
 
@@ -23,14 +23,27 @@ from .functions import catch_exceptions
 from .functions import page_error
 from .functions import template_path
 
+
 #########################################################################################
+
 
 from .functions import get_work_list
 from .functions import get_work
-from .functions import get_direction_list
 from .functions import put_work
 from .functions import post_work
+from .functions import delete_work
 from .functions import context_work
+
+
+#########################################################################################
+
+
+from .functions import get_direction_list
+from .functions import get_direction
+from .functions import put_direction
+from .functions import post_direction
+from .functions import delete_direction
+from .functions import context_direction
 
 
 #########################################################################################
@@ -136,6 +149,7 @@ class WorkDetailView(View):
             work.get("course"),
             work.get("semester"),
             directions,
+            w_id=pk,
         )
         return render(request, template_path("work_detail"),
                       context=context, status=status_code)
@@ -146,18 +160,25 @@ class WorkDetailView(View):
         course = request.POST.get("course")
         semester = request.POST.get("semester")
         directions = request.POST.getlist("directions")
-        auth_token = get_auth_token(request)
-        
-        status_code, detail, error = handle_response(
-            put_work(pk, title, course, semester, directions, auth_token)
-        )
 
-        if status_code == codes.ok:
+        delete = request.POST.get("delete_input")
+
+        auth_token = get_auth_token(request)
+        if delete:
+            status_code, detail, error = handle_response(
+                delete_work(pk, auth_token)
+            )
+        else:
+            status_code, detail, error = handle_response(
+                put_work(pk, title, course, semester, directions, auth_token)
+            )
+
+        if status_code == codes.ok or status_code == codes.no_content:
             return redirect("work_list")
         elif status_code == codes.unauthorized:
             return redirect("login")
         elif status_code == codes.bad_request:
-            context = context_work(title, course, semester, directions, detail)
+            context = context_work(title, course, semester, directions, detail, pk)
             return render(request, template_path("work_detail"),
                           context=context, status=status_code)
         else:
@@ -191,6 +212,95 @@ class WorkNewView(View):
         elif status_code == codes.bad_request:
             context = context_work(title, course, semester, directions, detail)
             return render(request, template_path("work_detail"),
+                          context=context, status=status_code)
+        else:
+            return page_error(request, status_code, error)
+
+
+#########################################################################################
+
+
+class DirectionListView(View):
+    @catch_exceptions()
+    def get(self, request, *args, **kwargs):
+        status_code, detail, error = handle_response(get_direction_list())
+
+        if error:
+            return page_error(request, status_code, error)
+
+        context = {
+            "directions": detail or [],
+        }
+
+        return render(request, template_path("direction_list"),
+                      context=context, status=status_code)
+
+
+class DirectionDetailView(View):
+    @catch_exceptions()
+    def get(self, request, pk, *args, **kwargs):
+        status_code, direction, error = handle_response(get_direction(pk))
+        if error:
+            return page_error(request, status_code, error)
+        context = context_direction(
+            title=direction.get("title"),
+            d_id=direction.get("id"),
+        )
+        return render(request, template_path("direction_detail"),
+                      context=context, status=status_code)
+
+    @catch_exceptions()
+    def post(self, request, pk, *args, **kwargs):
+        title = request.POST.get("title")
+        delete = request.POST.get("delete_input")
+        auth_token = get_auth_token(request)
+
+        if delete:
+            status_code, detail, error = handle_response(
+                delete_direction(pk, auth_token)
+            )
+        else:
+            status_code, detail, error = handle_response(
+                put_direction(pk, title, auth_token)
+            )
+
+        if status_code == codes.ok or status_code == codes.no_content:
+            return redirect("direction_list")
+        elif status_code == codes.unauthorized:
+            return redirect("login")
+        elif status_code == codes.bad_request:
+            context = context_direction(title, detail, pk)
+            return render(request, template_path("direction_detail"),
+                          context=context, status=status_code)
+        else:
+            return page_error(request, status_code, error)
+
+
+class DirectionNewView(View):
+    @catch_exceptions()
+    def get(self, request, *args, **kwargs):
+        if request.COOKIES.get("group") != ADMIN_GROUP_NAME:
+            return page_error(request, 404, NOT_FOUND)
+        context = context_direction()
+        return render(request, template_path("direction_detail"), context=context)
+
+    @catch_exceptions()
+    def post(self, request, *args, **kwargs):
+        title = request.POST.get("title")
+
+        auth_token = get_auth_token(request)
+
+        status_code, detail, error = handle_response(
+            post_direction(title, auth_token)
+        )
+
+        if status_code == codes.ok:
+            return redirect("direction_list")
+        elif status_code == codes.unauthorized:
+            return redirect("login")
+        elif status_code == codes.bad_request:
+            context = context_direction(title, detail)
+            return render(request, template_path("direction_detail"),
                           context=context, status=status_code)
         else:
             return page_error(request, status_code, error)

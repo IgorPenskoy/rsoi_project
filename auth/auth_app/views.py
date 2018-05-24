@@ -128,6 +128,11 @@ class CanEditWork(APIView):
         return check_permission_answer(request.user, "can_edit_work")
 
 
+class CanEditDirection(APIView):
+    def get(self, request):
+        return check_permission_answer(request.user, "can_edit_direction")
+
+
 class CanWatchStudentList(APIView):
     def get(self, request):
         return check_permission_answer(request.user, "can_watch_student_list")

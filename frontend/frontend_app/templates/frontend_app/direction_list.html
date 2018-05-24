@@ -1,0 +1,46 @@
+{% extends 'frontend_app/base.html' %}
+{% load static %}
+
+{% block content %}
+    {% if not directions %}
+        <div class="main-title">
+            <h1>Нет данных о направлениях</h1>
+        </div>
+    {% else %}
+    <form class="form-horizontal" role="presentation">
+        {% if request.COOKIES.group == "admin" %}
+        <div class="form-group">
+            <div class="pull-right">
+                <a href="{% url 'direction_new' %}" class="btn btn-default btn-success">Добавить</a>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="form-group">
+            <table class="table table-striped table-bordered table-hover"
+                   data-toggle="table"
+                   data-filter-control="true">
+                <thead>
+                    <tr>
+                        <th data-field="title" data-filter-control="input">Наименование</th>
+                    </tr>
+                </thead>
+                <tbody data-link="row" class="rowlink">
+                    {% for d in directions %}
+                    <tr>
+                        <td><a href="{% url 'direction_detail' pk=d.id %}"></a>{{ d.title }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if request.COOKIES.group == "admin" %}
+        <div class="form-group">
+            <div class="pull-right">
+                <a href="{% url 'direction_new' %}" class="btn btn-default btn-success">Добавить</a>
+            </div>
+        </div>
+        {% endif %}
+    </form>
+    {% endif %}
+{% endblock %}

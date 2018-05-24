@@ -24,6 +24,7 @@ urlpatterns = [
     path('check/can_edit_student_info/<pk>/', views.CanEditStudentInfo.as_view(),
          name='check_can_edit_student_info'),
     path('check/can_edit_work/', views.CanEditWork.as_view(), name='check_can_edit_work'),
+    path('check/can_edit_direction/', views.CanEditDirection.as_view(), name='check_can_edit_direction'),
     path('check/can_make_distribution/', views.CanMakeDistribution.as_view(),
          name='check_can_make_distribution'),
     path('check/can_watch_student_info/<pk>/', views.CanWatchStudentInfo.as_view(),
