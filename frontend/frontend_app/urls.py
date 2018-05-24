@@ -12,4 +12,7 @@ urlpatterns = [
     path('direction/', views.DirectionListView.as_view(), name='direction_list'),
     path('direction/new/', views.DirectionNewView.as_view(), name='direction_new'),
     path('direction/<pk>/', views.DirectionDetailView.as_view(), name='direction_detail'),
+    path('mentor/', views.MentorListView.as_view(), name='mentor_list'),
+    path('mentor/new/', views.MentorNewView.as_view(), name='mentor_new'),
+    path('mentor/<pk>/', views.MentorDetailView.as_view(), name='mentor_detail'),
 ]

@@ -1,0 +1,56 @@
+{% extends 'frontend_app/base.html' %}
+{% load static %}
+
+{% block content %}
+    {% if not mentors %}
+        <div class="main-title">
+            <h1>Нет данных о руководителях</h1>
+        </div>
+        <div class="pull-right">
+            <a href="{% url 'mentor_new' %}" class="btn btn-default btn-success">Добавить</a>
+        </div>
+    {% else %}
+    <form class="form-horizontal" role="presentation">
+        {% if request.COOKIES.group == "admin" %}
+        <div class="form-group">
+            <div class="pull-right">
+                <a href="{% url 'mentor_new' %}" class="btn btn-default btn-success">Добавить</a>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="form-group">
+            <table class="table table-striped table-bordered table-hover"
+                   data-toggle="table"
+                   data-filter-control="true">
+                <thead>
+                    <tr>
+                        <th data-field="surname" data-filter-control="input">Фамилия</th>
+                        <th data-field="name" data-filter-control="input">Имя</th>
+                        <th data-field="patronymic" data-filter-control="input">Отчество</th>
+                        <th data-field="position" data-filter-control="select">Должность</th>
+                        <th data-field="title" data-filter-control="select">Звание</th></tr>
+                </thead>
+                <tbody data-link="row" class="rowlink">
+                    {% for mentor in mentors %}
+                    <tr>
+                        <td><a href="{% url 'mentor_detail' pk=mentor.id %}"></a>{{ mentor.surname }}</td>
+                        <td>{{ mentor.name }}</td>
+                        <td>{{ mentor.patronymic }}</td>
+                        <td>{{ mentor.position }}</td>
+                        <td>{{ mentor.title }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if request.COOKIES.group == "admin" %}
+        <div class="form-group">
+            <div class="pull-right">
+                <a href="{% url 'mentor_new' %}" class="btn btn-default btn-success">Добавить</a>
+            </div>
+        </div>
+        {% endif %}
+    </form>
+    {% endif %}
+{% endblock %}

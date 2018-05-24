@@ -1,0 +1,217 @@
+{% extends 'frontend_app/base.html' %}
+{% load static %}
+
+{% block content %}
+    {% if request.COOKIES.group == "admin" %}
+        <form id="change_form" class="form-horizontal" role="form" method="post">
+            {% csrf_token %}
+            <input hidden id="delete_input" name="delete_input" value="">
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="pull-right">
+                        <a href="{% url 'mentor_list' %}" class="btn btn-default">Назад</a>
+                        <button type="submit" class="btn btn-primary btn-save">Сохранить</button>
+                    </div>
+                    {% if id %}
+                        <div class="pull-left">
+                            <button id="mentor_delete_button" type="button" class="btn btn-danger">Удалить</button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Фаимлия:</label>
+                <div class="col-sm-10">
+                    <input type="text" name="surname" class="form-control" value="{{surname}}" required>
+                    <span class="text-danger">{{surname_error}}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Имя:</label>
+                <div class="col-sm-10">
+                    <input type="text" name="name" class="form-control" value="{{name}}" required>
+                    <span class="text-danger">{{name_error}}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Отчество:</label>
+                <div class="col-sm-10">
+                    <input type="text" name="patronymic" class="form-control" value="{{patronymic}}" required>
+                    <span class="text-danger">{{patronymic_error}}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Должность:</label>
+                <div class="col-sm-10">
+                    <select class="form-control col-sm-2" name="position">
+                    {% for p in positions %}
+                        {% if p.value == position %}
+                        <option value="{{p.value}}" selected>{{p.view}}</option>
+                        {% else %}
+                        <option value="{{p.value}}">{{p.view}}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                    <span class="text-danger">{{position_error}}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Звание:</label>
+                <div class="col-sm-10">
+                    <select class="form-control col-sm-2" name="title">
+                        <option value=""></option>
+                    {% for t in titles %}
+                        {% if t.value == title %}
+                        <option value="{{t.value}}" selected>{{t.view}}</option>
+                        {% else %}
+                        <option value="{{t.value}}">{{t.view}}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                    <span class="text-danger">{{title_error}}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Email:</label>
+                <div class="col-sm-10">
+                    <input type="email" name="email" class="form-control" value="{{email}}">
+                    <span class="text-danger">{{email_error}}</span>
+                </div>
+            </div>
+
+            {% if id %}
+            <div class="form-group">
+                <label class="control-label">Научные предпочтения:</label>
+                <select id="sciences_edit" multiple class="form-control col-sm-2" name="sciences">
+                    {% for d in sciences %}
+                        <option value="{{d.id}}" selected>{{d.title}}</option>
+                    {% endfor %}
+                    {% for d in unselected_sciences %}
+                        <option value="{{d.id}}">{{d.title}}</option>
+                    {% endfor %}
+                </select>
+                <span class="text-danger">{{science_preferences_error}}</span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Персональные предпочтения:</label>
+                <select id="personals_edit" multiple class="form-control col-sm-2" name="personals">
+                    {% for d in personals %}
+                        <option value="{{d.id}}" selected>{{d.surname}}, {{d.group}}</option>
+                    {% endfor %}
+                    {% for d in unselected_personals %}
+                        <option value="{{d.id}}">{{d.surname}}, {{d.group}}</option>
+                    {% endfor %}
+                </select>
+                <span class="text-danger">{{personal_preferences_error}}</span>
+            </div>
+            {% endif %}
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="pull-right">
+                        <a href="{% url 'mentor_list' %}" class="btn btn-default">Назад</a>
+                        <button type="submit" class="btn btn-primary btn-save">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    {% else %}
+        <form class="form-horizontal" role="presentation">
+            <div class="form-group">
+                <div class="pull-right">
+                    <a href="{% url 'mentor_list' %}" class="btn btn-default">Назад</a>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Имя: {{name}}</label>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Фамилия: {{surname}}</label>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Отчество: {{patronymic}}</label>
+            </div>
+
+            <div class="form-group">
+                {% for p in positions %}
+                    {% if p.value == position%}
+                        <label class="control-label">Должность: {{p.view}}</label>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            {% if title %}
+            <div class="form-group">
+                {% for t in titles %}
+                    {% if t.value == title %}
+                        <label class="control-label">Звание: {{t.view}}</label>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if email %}
+            <div class="form-group">
+                <label class="control-label">E-mail: {{email}}</label>
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <ul class="list-group">
+                {% for d in sciences %}
+                    <li class="list-group-item">{{d.title}}</li>
+                {% endfor %}
+                </ul>
+            </div>
+
+            <div class="form-group">
+                <div class="pull-right">
+                    <a href="{% url 'mentor_list' %}" class="btn btn-default">Назад</a>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}
+{% block scripts %}
+<script>
+    var demo1 = $('select[name="sciences"]').bootstrapDualListbox({
+        infoTextFiltered: "",
+        infoText: "",
+        infoTextEmpty: "",
+        filterPlaceHolder: "Фильтр",
+        filterTextClear: "Показать все",
+        moveAllLabel: "Выбрать все",
+        removeAllLabel: "Убрать все",
+        selectedListLabel: "Выбранные направления",
+        nonSelectedListLabel: "Оставшиеся направления",
+    });
+    var demo2 = $('select[name="personals"]').bootstrapDualListbox({
+        infoTextFiltered: "",
+        infoText: "",
+        infoTextEmpty: "",
+        filterPlaceHolder: "Фильтр",
+        filterTextClear: "Показать все",
+        moveAllLabel: "Выбрать все",
+        removeAllLabel: "Убрать все",
+        selectedListLabel: "Выбранные студенты",
+        nonSelectedListLabel: "Оставшиеся студенты",
+    });
+</script>
+<script>
+    $('#mentor_delete_button').on('click', function() {
+        if (confirm("Удалить?")) {
+            $('#delete_input').val("delete");
+            $('#change_form').submit();
+        }
+    });
+</script>
+{% endblock %}

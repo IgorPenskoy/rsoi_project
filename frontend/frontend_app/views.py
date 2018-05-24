@@ -49,6 +49,17 @@ from .functions import context_direction
 #########################################################################################
 
 
+from .functions import get_mentor_list
+from .functions import get_mentor
+from .functions import put_mentor
+from .functions import post_mentor
+from .functions import delete_mentor
+from .functions import context_mentor
+
+
+#########################################################################################
+
+
 from .constants import INTERNAL_ERROR
 from .constants import NOT_FOUND
 from .constants import FORBIDDEN
@@ -301,6 +312,125 @@ class DirectionNewView(View):
         elif status_code == codes.bad_request:
             context = context_direction(title, detail)
             return render(request, template_path("direction_detail"),
+                          context=context, status=status_code)
+        else:
+            return page_error(request, status_code, error)
+
+
+#########################################################################################
+
+
+class MentorListView(View):
+    @catch_exceptions()
+    def get(self, request, *args, **kwargs):
+        status_code, detail, error = handle_response(get_mentor_list())
+        if error:
+            return page_error(request, status_code, error)
+
+        context = {
+            "mentors": detail or [],
+        }
+
+        return render(request, template_path("mentor_list"),
+                      context=context, status=status_code)
+
+
+class MentorDetailView(View):
+    @catch_exceptions()
+    def get(self, request, pk, *args, **kwargs):
+        status_code, mentor, error = handle_response(get_mentor(pk))
+        if error:
+            return page_error(request, status_code, error)
+        sciences = mentor.get("science_preferences_detail", [])
+        personals = mentor.get("personal_preferences_detail", [])
+        context = context_mentor(
+            mentor.get("surname"),
+            mentor.get("name"),
+            mentor.get("patronymic"),
+            mentor.get("position"),
+            mentor.get("title"),
+            mentor.get("email"),
+            sciences,
+            personals,
+            m_id=pk,
+        )
+        return render(request, template_path("mentor_detail"),
+                      context=context, status=status_code)
+
+    @catch_exceptions()
+    def post(self, request, pk, *args, **kwargs):
+        surname = request.POST.get("surname")
+        name = request.POST.get("name")
+        patronymic = request.POST.get("patronymic")
+        position = request.POST.get("position")
+        title = request.POST.get("title")
+        email = request.POST.get("email")
+        sciences = request.POST.getlist("sciences")
+        personals = request.POST.getlist("personals")
+
+        delete = request.POST.get("delete_input")
+
+        auth_token = get_auth_token(request)
+
+        if delete:
+            status_code, detail, error = handle_response(
+                delete_mentor(pk, auth_token)
+            )
+        else:
+            status_code, detail, error = handle_response(
+                put_mentor(pk, surname, name, patronymic, position, title, email,
+                           sciences, personals, auth_token)
+            )
+
+        if status_code == codes.ok or status_code == codes.no_content:
+            return redirect("mentor_list")
+        elif status_code == codes.unauthorized:
+            return redirect("login")
+        elif status_code == codes.bad_request:
+            context = context_mentor(surname, name, patronymic, position, title,
+                                     email, sciences, personals, detail, pk)
+            return render(request, template_path("mentor_detail"),
+                          context=context, status=status_code)
+        else:
+            return page_error(request, status_code, error)
+
+
+class MentorNewView(View):
+    @catch_exceptions()
+    def get(self, request, *args, **kwargs):
+        if request.COOKIES.get("group") != ADMIN_GROUP_NAME:
+            return page_error(request, 404, NOT_FOUND)
+        context = context_mentor()
+        return render(request, template_path("mentor_detail"), context=context)
+
+    @catch_exceptions()
+    def post(self, request, *args, **kwargs):
+        surname = request.POST.get("surname")
+        name = request.POST.get("name")
+        patronymic = request.POST.get("patronymic")
+        position = request.POST.get("position")
+        title = request.POST.get("title")
+        email = request.POST.get("email")
+
+        auth_token = get_auth_token(request)
+
+        status_code, detail, error = handle_response(
+            post_mentor(surname, name, patronymic, position, title, email, auth_token)
+        )
+
+        if status_code == codes.ok:
+            context = {
+                "group": u"Руководитель",
+                "username": detail.get("username"),
+                "password": detail.get("password"),
+            }
+            return render(request, template_path("success_registration"), context=context)
+        elif status_code == codes.unauthorized:
+            return redirect("login")
+        elif status_code == codes.bad_request:
+            context = context_mentor(surname, name, patronymic, position, title,
+                                     email, error_detail=detail)
+            return render(request, template_path("mentor_detail"),
                           context=context, status=status_code)
         else:
             return page_error(request, status_code, error)

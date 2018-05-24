@@ -42,6 +42,7 @@ from .functions import restore_user
 
 from .functions import register_student
 from .functions import get_student_list
+from .functions import get_student_list_group
 from .functions import get_student
 from .functions import put_student
 from .functions import delete_student
@@ -173,8 +174,20 @@ class LogoutView(APIView):
 
 class ListStudentView(APIView):
     @catch_exceptions
+    def get(self, request):
+        distribution_response = get_student_list()
+        if distribution_response.status_code == codes.ok:
+            return success_response(detail=distribution_response.json())
+        elif distribution_response.status_code == codes.not_found:
+            raise NotFound
+        else:
+            raise InternalError
+
+
+class ListStudentByGroupView(APIView):
+    @catch_exceptions
     def get(self, request, group):
-        distribution_response = get_student_list(group)
+        distribution_response = get_student_list_group(group)
         if distribution_response.status_code == codes.ok:
             return success_response(detail=distribution_response.json())
         elif distribution_response.status_code == codes.not_found:

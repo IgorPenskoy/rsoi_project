@@ -171,7 +171,11 @@ def get_student(pk):
     return get_distribution("student/%s/" % str(pk))
 
 
-def get_student_list(group):
+def get_student_list():
+    return get_distribution("student/")
+
+
+def get_student_list_group(group):
     return get_distribution("student/group/%s/" % str(group))
 
 
@@ -190,6 +194,7 @@ def register_student(uid, name, surname, patronymic, email, group):
 def put_student(pk, name, surname, patronymic, email, group,
                 science_preferences, personal_preferences):
     request_json = {
+        "id": pk,
         "name": name,
         "surname": surname,
         "patronymic": patronymic,
@@ -232,6 +237,7 @@ def register_mentor(uid, name, surname, patronymic, email, position, title):
 def put_mentor(pk, name, surname, patronymic, email, position, title,
                science_preferences, personal_preferences):
     request_json = {
+        "id": pk,
         "name": name,
         "surname": surname,
         "patronymic": patronymic,

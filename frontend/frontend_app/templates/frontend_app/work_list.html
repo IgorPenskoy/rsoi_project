@@ -6,6 +6,9 @@
         <div class="main-title">
             <h1>Нет данных о курсовых и дипломных работах</h1>
         </div>
+        <div class="pull-right">
+            <a href="{% url 'work_new' %}" class="btn btn-default btn-success">Добавить</a>
+        </div>
     {% else %}
     <form class="form-horizontal" role="presentation">
         {% if request.COOKIES.group == "admin" %}

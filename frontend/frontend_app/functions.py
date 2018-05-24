@@ -9,6 +9,8 @@ from .constants import SERVICE_UNAVAILABLE
 from .constants import INTERNAL_ERROR
 from .constants import COURSES
 from .constants import SEMESTERS
+from .constants import POSITION_CHOICES
+from .constants import TITLE_CHOICES
 
 AGGREGATION_URL = settings.AGGREGATION_URL
 
@@ -201,6 +203,111 @@ def context_direction(title=None, error_detail=None, d_id=None):
     context = {
         "id": d_id,
         "title": title or "",
+    }
+    return error_context(context, error_detail)
+
+
+#########################################################################################
+
+
+def get_student_list():
+    return get("student/")
+
+
+def get_mentor_list():
+    return get("mentor/")
+
+
+def get_mentor(pk):
+    return get("mentor/%s/" % str(pk))
+
+
+def put_mentor(pk, surname, name, patronymic, position,
+               title, email, sciences, personals, auth_token):
+    request_json = {
+        "id": pk,
+        "surname": surname,
+        "name": name,
+        "patronymic": patronymic,
+        "position": position,
+        "title": title,
+        "email": email,
+        "science_preferences": sciences,
+        "personal_preferences": personals,
+    }
+    return put("mentor/%s/" % str(pk), request_json, auth_token)
+
+
+def post_mentor(surname, name, patronymic, position,
+                title, email, auth_token):
+    request_json = {
+        "surname": surname,
+        "name": name,
+        "patronymic": patronymic,
+        "position": position,
+        "title": title,
+        "email": email,
+    }
+    return post("register_mentor/", request_json, auth_token)
+
+
+def delete_mentor(pk, auth_token):
+    return delete("delete_mentor/%s/" % str(pk), auth_token)
+
+
+def context_mentor(surname=None, name=None, patronymic=None, position=None, title=None,
+                   email=None, sciences=None, personals=None,
+                   error_detail=None, m_id=None):
+    sciences = sciences or []
+    directions_response = get_direction_list()
+    directions_response_json = directions_response.json()
+    all_directions = directions_response_json.get("detail", [])
+    selected_directions = []
+    unselected_directions = []
+    directions_id = []
+    for d in sciences:
+        if isinstance(d, dict):
+            directions_id.append(str(d.get("id")))
+        else:
+            directions_id.append(str(d))
+    for d in all_directions:
+        if str(d.get("id")) not in directions_id:
+            unselected_directions.append(d)
+        else:
+            selected_directions.append(d)
+
+    personals = personals or []
+    students_response = get_student_list()
+    students_response_json = students_response.json()
+    all_students = students_response_json.get("detail", [])
+    selected_students = []
+    unselected_students = []
+    students_id = []
+    for d in personals:
+        if isinstance(d, dict):
+            students_id.append(str(d.get("id")))
+        else:
+            students_id.append(str(d))
+    for d in all_students:
+        if str(d.get("id")) not in students_id:
+            unselected_students.append(d)
+        else:
+            selected_students.append(d)
+
+    context = {
+        "id": m_id,
+        "name": name or "",
+        "surname": surname or "",
+        "patronymic": patronymic or "",
+        "position": position or u"Преподаватель",
+        "title": title or "",
+        "email": email or "",
+        "sciences": selected_directions,
+        "unselected_sciences": unselected_directions,
+        "personals": selected_students,
+        "unselected_personals": unselected_students,
+        "positions": POSITION_CHOICES,
+        "titles": TITLE_CHOICES,
     }
     return error_context(context, error_detail)
 
