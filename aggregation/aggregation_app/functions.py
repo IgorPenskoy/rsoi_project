@@ -36,8 +36,8 @@ def validate_field(field_name, field_value, mandatory=False, not_empty=False, ch
         raise ValidationError({field_name: MANDATORY_FIELD})
     elif not_empty and not str(field_value).strip():
         raise ValidationError({field_name: NOT_EMPTY_FIELD})
-    elif check_re and not re.match(check_re, str(field_value)):
-        raise ValidationError({field_name: check_re})
+    elif check_re and not re.match(check_re.get("re"), str(field_value)):
+        raise ValidationError({field_name: check_re.get("message")})
     return field_value
 
 

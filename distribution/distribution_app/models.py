@@ -11,6 +11,9 @@ from .constants import SEMESTER_CHOICES
 from .constants import INIT_SEMESTER
 
 
+from .error_messages import field_error_messages
+
+
 class Direction(models.Model):
     title = models.CharField(max_length=500, unique=True, verbose_name=u"Название")
 
@@ -19,20 +22,34 @@ class Direction(models.Model):
 
 
 class Work(models.Model):
-    title = models.CharField(max_length=500, unique=True, verbose_name=u"Название")
+    title = models.CharField(
+        max_length=500,
+        unique=True,
+        verbose_name=u"Название",
+        error_messages=field_error_messages(
+            unique=u"Работа с таким названием уже существует"
+        )
+    )
     course = models.CharField(
         max_length=2,
         choices=COURSE_CHOICES,
         default=INIT_COURSE,
-        verbose_name=u"Курс"
+        verbose_name=u"Курс",
+        error_messages=field_error_messages(),
     )
     semester = models.CharField(
         max_length=1,
         choices=SEMESTER_CHOICES,
         default=INIT_SEMESTER,
-        verbose_name=u"Семестр"
+        verbose_name=u"Семестр",
+        error_messages=field_error_messages(),
     )
-    directions = models.ManyToManyField(Direction, blank=True, verbose_name=u"Направления")
+    directions = models.ManyToManyField(
+        Direction,
+        blank=True,
+        verbose_name=u"Направления",
+        error_messages=field_error_messages(),
+    )
 
     class Meta:
         ordering = ('title',)

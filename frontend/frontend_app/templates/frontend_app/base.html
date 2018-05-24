@@ -13,11 +13,15 @@
 
     <link rel="shortcut icon" href="{% static 'frontend_app/favicon.ico' %}">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="{% static 'frontend_app/css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'frontend_app/css/normalize.css' %}">
     <link rel="stylesheet" href="{% static 'frontend_app/css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'frontend_app/css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'frontend_app/css/jasny-bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'frontend_app/css/bootstrap-duallistbox.css' %}">
+    <link rel="stylesheet" href="{% static 'frontend_app/css/bootstrap-table-filter-control.css' %}">
+    <link rel="stylesheet" href="{% static 'frontend_app/css/bootstrap-table.min.css' %}">
+    <link rel="stylesheet" href="{% static 'frontend_app/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'frontend_app/css/bootstrap-theme.min.css' %}">
 </head>
 
 <body>
@@ -32,14 +36,12 @@
                 </div>
                 <ul class="nav navbar-nav">
                     <li><a href="/">Распределение</a></li>
-                    <li><a href="/">Работы</a></li>
+                    <li><a href="/work/">Работы</a></li>
                     <li><a href="/">Направления</a></li>
                     <li><a href="/">Руководители</a></li>
                     <li><a href="/">Студенты</a></li>
-                    {% if request.COOKIES.username %}
+                    {% if request.COOKIES.group != "admin" %}
                         <li><a href="/">Профиль {{ request.COOKIES.username }}</a></li>
-                    {% else %}
-                        <li><a href="/">Профиль</a></li>
                     {% endif %}
                     {% if request.COOKIES.auth_token %}
                         <li><a href="/logout/">Выйти</a></li>
@@ -71,6 +73,13 @@
     <script>window.jQuery || document.write('<script src="{% static 'frontend_app/js/vendor/jquery-3.3.1.min.js' %}"><\/script>')</script>
     <script src="{% static 'frontend_app/js/plugins.js' %}"></script>
     <script src="{% static 'frontend_app/js/main.js' %}"></script>
+    <script src="{% static 'frontend_app/js/jasny-bootstrap.min.js' %}"></script>
+    <script src="{% static 'frontend_app/js/jquery.bootstrap-duallistbox.min.js' %}"></script>
+    <script src="{% static 'frontend_app/js/bootstrap-table.min.js' %}"></script>
+    <script src="{% static 'frontend_app/js/bootstrap-table-filter-control.min.js' %}"></script>
+    <script src="{% static 'frontend_app/js/bootstrap.min.js' %}"></script>
+    {% block scripts %}
+    {% endblock %}
 </body>
 
 </html>

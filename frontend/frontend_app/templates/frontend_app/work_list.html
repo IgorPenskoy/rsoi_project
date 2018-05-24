@@ -1,0 +1,49 @@
+{% extends 'frontend_app/base.html' %}
+{% load static %}
+
+{% block content %}
+    {% if not works %}
+        <div class="main-title">
+            <h1>Нет данных о курсовых и дипломных работах</h1>
+        </div>
+    {% else %}
+    <form class="form-horizontal" role="presentation">
+        {% if request.COOKIES.group == "admin" %}
+        <div class="form-group">
+            <div class="pull-right">
+                <a href="{% url 'work_new' %}" class="btn btn-default btn-success">Добавить</a>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="form-group">
+            <table class="table table-striped table-bordered table-hover"
+                   data-toggle="table"
+                   data-filter-control="true">
+                <thead>
+                    <tr>
+                        <th data-field="title" data-filter-control="input">Наименование</th>
+                        <th data-field="course" data-filter-control="select">Курс</th>
+                        <th data-field="semester" data-filter-control="select">Семестр</th></tr>
+                </thead>
+                <tbody data-link="row" class="rowlink">
+                    {% for work in works %}
+                    <tr>
+                        <td><a href="{% url 'work_detail' pk=work.id %}"></a>{{ work.title }}</td>
+                        <td>{{ work.course }}</td>
+                        <td>{{ work.semester }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if request.COOKIES.group == "admin" %}
+        <div class="form-group">
+            <div class="pull-right">
+                <a href="{% url 'work_new' %}" class="btn btn-default btn-success">Добавить</a>
+            </div>
+        </div>
+        {% endif %}
+    </form>
+    {% endif %}
+{% endblock %}

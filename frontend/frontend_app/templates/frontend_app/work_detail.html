@@ -1,0 +1,126 @@
+{% extends 'frontend_app/base.html' %}
+{% load static %}
+
+{% block content %}
+    {% if request.COOKIES.group == "admin" %}
+        <form class="form-horizontal" role="form" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="pull-right">
+                        <a href="{% url 'work_list' %}" class="btn btn-default">Назад</a>
+                        <button type="submit" class="btn btn-primary btn-save">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Наименование:</label>
+                <div class="col-sm-10">
+                    <input type="text" name="title" class="form-control" value="{{title}}" required>
+                    <span class="text-danger">{{title_error}}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Курс:</label>
+                <div class="col-sm-10">
+                    <select class="form-control col-sm-2" name="course">
+                    {% for c in courses %}
+                        {% if c == course %}
+                        <option selected>{{c}}</option>
+                        {% else %}
+                        <option>{{c}}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                    <span class="text-danger">{{course_error}}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Семестр:</label>
+                <div class="col-sm-10">
+                    <select class="form-control col-sm-2" name="semester">
+                    {% for s in semesters %}
+                        {% if s == semester %}
+                        <option selected>{{s}}</option>
+                        {% else %}
+                        <option>{{s}}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                    <span class="text-danger">{{semester_error}}</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Направления:</label>
+                <select id="directions_edit" multiple class="form-control col-sm-2" name="directions">
+                    {% for d in directions %}
+                        <option value="{{d.id}}" selected>{{d.title}}</option>
+                    {% endfor %}
+                    {% for d in unselected_directions %}
+                        <option value="{{d.id}}">{{d.title}}</option>
+                    {% endfor %}
+                </select>
+                <span class="text-danger">{{directions_error}}</span>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="pull-right">
+                        <a href="{% url 'work_list' %}" class="btn btn-default">Назад</a>
+                        <button type="submit" class="btn btn-primary btn-save">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    {% else %}
+        <form class="form-horizontal" role="presentation">
+            <div class="form-group">
+                <div class="pull-right">
+                    <a href="{% url 'work_list' %}" class="btn btn-default">Назад</a>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Наименование: {{title}}</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Курс: {{course}}</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Семестр: {{semester}}</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Направления: {{directions_count}}</label>
+            </div>
+            <div class="form-group">
+                <ul class="list-group">
+                {% for d in directions %}
+                    <li class="list-group-item">{{d.title}}</li>
+                {% endfor %}
+                </ul>
+            </div>
+            <div class="form-group">
+                <div class="pull-right">
+                    <a href="{% url 'work_list' %}" class="btn btn-default">Назад</a>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}
+{% block scripts %}
+<script>
+    var demo1 = $('select[name="directions"]').bootstrapDualListbox({
+        infoTextFiltered: "",
+        infoText: "",
+        infoTextEmpty: "",
+        filterPlaceHolder: "Фильтр",
+        filterTextClear: "Показать все",
+        moveAllLabel: "Выбрать все",
+        removeAllLabel: "Убрать все",
+        selectedListLabel: "Выбранные направления",
+        nonSelectedListLabel: "Оставшиеся направления",
+    });
+</script>
+{% endblock %}
