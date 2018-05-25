@@ -191,7 +191,7 @@ def register_student(uid, name, surname, patronymic, email, group):
     return post_distribution("student/", request_json)
 
 
-def put_student(pk, name, surname, patronymic, email, group,
+def put_student(pk, name, surname, patronymic, group, email,
                 science_preferences, personal_preferences):
     request_json = {
         "id": pk,

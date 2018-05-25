@@ -27,3 +27,6 @@ TITLE_CHOICES = [
     {"value": "DP", "view": u"Доктор педагогических наук"},
     {"value": "CP", "view": u"Кандидат педагогических наук"},
 ]
+
+GROUPS = [str(i) + str(j) for i in range(1, 9) for j in range(1, 7)] +\
+         [str(i) + str(j) + u"М" for i in range(1, 5) for j in range(1, 7)]

@@ -123,20 +123,46 @@ class Mentor(models.Model):
 
 
 class Student(models.Model):
-    surname = models.CharField(max_length=150, verbose_name=u"Фамилия")
-    name = models.CharField(max_length=150, verbose_name=u"Имя")
-    patronymic = models.CharField(max_length=150, verbose_name=u"Отчество")
+    surname = models.CharField(
+        max_length=150,
+        verbose_name=u"Фамилия",
+        error_messages=field_error_messages(),
+    )
+    name = models.CharField(
+        max_length=150,
+        verbose_name=u"Имя",
+        error_messages=field_error_messages(),
+    )
+    patronymic = models.CharField(
+        max_length=150,
+        verbose_name=u"Отчество",
+        error_messages=field_error_messages(),
+    )
     group = models.CharField(
         max_length=3,
         choices=GROUP_CHOICES,
         default=INIT_GROUP,
-        verbose_name=u"Группа"
+        verbose_name=u"Группа",
+        error_messages=field_error_messages(),
     )
-    email = models.EmailField(blank=True, null=True, verbose_name=u"Электронная почта")
-    science_preferences = models.ManyToManyField(Direction, blank=True,
-                                                 verbose_name=u"Научные предпочтения")
-    personal_preferences = models.ManyToManyField(Mentor, blank=True,
-                                                  verbose_name=u"Личные предпочтения")
+    email = models.EmailField(
+        blank=True,
+        null=True,
+        verbose_name=u"Электронная почта",
+        error_messages=field_error_messages(),
+    )
+    science_preferences = models.ManyToManyField(
+        Direction,
+        blank=True,
+        verbose_name=u"Научные предпочтения",
+        error_messages=field_error_messages(),
+    )
+    personal_preferences = models.ManyToManyField(
+        Mentor,
+        blank=True,
+        verbose_name=u"Личные предпочтения",
+        error_messages=field_error_messages(),
+    )
 
     class Meta:
         ordering = ('group', 'surname', 'name', 'patronymic',)

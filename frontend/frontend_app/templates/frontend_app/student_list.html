@@ -2,13 +2,13 @@
 {% load static %}
 
 {% block content %}
-    {% if not mentors %}
+    {% if not students %}
         <div class="main-title">
-            <h1>Нет данных о руководителях</h1>
+            <h1>Нет данных о студентах</h1>
         </div>
         {% if request.COOKIES.group == "admin" %}
         <div class="pull-right">
-            <a href="{% url 'mentor_new' %}" class="btn btn-default btn-success">Добавить</a>
+            <a href="{% url 'student_new' %}" class="btn btn-default btn-success">Добавить</a>
         </div>
         {% endif %}
     {% else %}
@@ -16,7 +16,7 @@
         {% if request.COOKIES.group == "admin" %}
         <div class="form-group">
             <div class="pull-right">
-                <a href="{% url 'mentor_new' %}" class="btn btn-default btn-success">Добавить</a>
+                <a href="{% url 'student_new' %}" class="btn btn-default btn-success">Добавить</a>
             </div>
         </div>
         {% endif %}
@@ -30,17 +30,15 @@
                         <th data-field="surname" data-filter-control="input">Фамилия</th>
                         <th data-field="name" data-filter-control="input">Имя</th>
                         <th data-field="patronymic" data-filter-control="input">Отчество</th>
-                        <th data-field="position" data-filter-control="select">Должность</th>
-                        <th data-field="title" data-filter-control="select">Звание</th></tr>
+                        <th data-field="group" data-filter-control="select">Группа</th>
                 </thead>
                 <tbody data-link="row" class="rowlink">
-                    {% for mentor in mentors %}
+                    {% for student in students %}
                     <tr>
-                        <td><a href="{% url 'mentor_detail' pk=mentor.id %}"></a>{{ mentor.surname }}</td>
-                        <td>{{ mentor.name }}</td>
-                        <td>{{ mentor.patronymic }}</td>
-                        <td>{{ mentor.position }}</td>
-                        <td>{{ mentor.title }}</td>
+                        <td><a href="{% url 'student_detail' pk=student.id %}"></a>{{ student.surname }}</td>
+                        <td>{{ student.name }}</td>
+                        <td>{{ student.patronymic }}</td>
+                        <td>{{ student.group }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -49,7 +47,7 @@
         {% if request.COOKIES.group == "admin" %}
         <div class="form-group">
             <div class="pull-right">
-                <a href="{% url 'mentor_new' %}" class="btn btn-default btn-success">Добавить</a>
+                <a href="{% url 'student_new' %}" class="btn btn-default btn-success">Добавить</a>
             </div>
         </div>
         {% endif %}

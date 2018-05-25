@@ -60,6 +60,17 @@ from .functions import context_mentor
 #########################################################################################
 
 
+from .functions import get_student_list
+from .functions import get_student
+from .functions import put_student
+from .functions import post_student
+from .functions import delete_student
+from .functions import context_student
+
+
+#########################################################################################
+
+
 from .constants import INTERNAL_ERROR
 from .constants import NOT_FOUND
 from .constants import FORBIDDEN
@@ -431,6 +442,122 @@ class MentorNewView(View):
             context = context_mentor(surname, name, patronymic, position, title,
                                      email, error_detail=detail)
             return render(request, template_path("mentor_detail"),
+                          context=context, status=status_code)
+        else:
+            return page_error(request, status_code, error)
+
+
+#########################################################################################
+
+
+class StudentListView(View):
+    @catch_exceptions()
+    def get(self, request, *args, **kwargs):
+        status_code, detail, error = handle_response(get_student_list())
+        if error:
+            return page_error(request, status_code, error)
+
+        context = {
+            "students": detail or [],
+        }
+
+        return render(request, template_path("student_list"),
+                      context=context, status=status_code)
+
+
+class StudentDetailView(View):
+    @catch_exceptions()
+    def get(self, request, pk, *args, **kwargs):
+        status_code, student, error = handle_response(get_student(pk))
+        if error:
+            return page_error(request, status_code, error)
+        sciences = student.get("science_preferences_detail", [])
+        personals = student.get("personal_preferences_detail", [])
+        context = context_student(
+            student.get("surname"),
+            student.get("name"),
+            student.get("patronymic"),
+            student.get("group"),
+            student.get("email"),
+            sciences,
+            personals,
+            s_id=pk,
+        )
+        return render(request, template_path("student_detail"),
+                      context=context, status=status_code)
+
+    @catch_exceptions()
+    def post(self, request, pk, *args, **kwargs):
+        surname = request.POST.get("surname")
+        name = request.POST.get("name")
+        patronymic = request.POST.get("patronymic")
+        group = request.POST.get("group")
+        email = request.POST.get("email")
+        sciences = request.POST.getlist("sciences")
+        personals = request.POST.getlist("personals")
+
+        delete = request.POST.get("delete_input")
+
+        auth_token = get_auth_token(request)
+
+        if delete:
+            status_code, detail, error = handle_response(
+                delete_student(pk, auth_token)
+            )
+        else:
+            status_code, detail, error = handle_response(
+                put_student(pk, surname, name, patronymic, group, email,
+                            sciences, personals, auth_token)
+            )
+
+        if status_code == codes.ok or status_code == codes.no_content:
+            return redirect("student_list")
+        elif status_code == codes.unauthorized:
+            return redirect("login")
+        elif status_code == codes.bad_request:
+            context = context_student(surname, name, patronymic, group,
+                                      email, sciences, personals, detail, pk)
+            return render(request, template_path("student_detail"),
+                          context=context, status=status_code)
+        else:
+            return page_error(request, status_code, error)
+
+
+class StudentNewView(View):
+    @catch_exceptions()
+    def get(self, request, *args, **kwargs):
+        if request.COOKIES.get("group") != ADMIN_GROUP_NAME:
+            return page_error(request, 404, NOT_FOUND)
+        context = context_student()
+        return render(request, template_path("student_detail"), context=context)
+
+    @catch_exceptions()
+    def post(self, request, *args, **kwargs):
+        surname = request.POST.get("surname")
+        name = request.POST.get("name")
+        patronymic = request.POST.get("patronymic")
+        group = request.POST.get("group")
+        email = request.POST.get("email")
+
+        auth_token = get_auth_token(request)
+
+        status_code, detail, error = handle_response(
+            post_student(surname, name, patronymic, group, email, auth_token)
+        )
+
+        if status_code == codes.ok:
+            context = {
+                "group": u"Студент",
+                "username": detail.get("username"),
+                "password": detail.get("password"),
+            }
+            return render(request, template_path("success_registration"), context=context)
+        elif status_code == codes.unauthorized:
+            return redirect("login")
+        elif status_code == codes.bad_request:
+            context = context_student(surname, name, patronymic, group,
+                                      email, error_detail=detail)
+            return render(request, template_path("student_detail"),
                           context=context, status=status_code)
         else:
             return page_error(request, status_code, error)
