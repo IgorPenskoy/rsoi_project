@@ -97,9 +97,11 @@
             <div class="form-group">
                 <label class="control-label">Семестр: {{semester}}</label>
             </div>
+            {% if directions %}
             <div class="form-group">
                 <label class="control-label">Направления: {{directions_count}}</label>
             </div>
+            {% endif %}
             <div class="form-group">
                 <ul class="list-group">
                 {% for d in directions %}

@@ -71,6 +71,14 @@ from .functions import context_student
 #########################################################################################
 
 
+from .functions import get_repository
+from .functions import post_repository
+from .functions import context_repository
+
+
+#########################################################################################
+
+
 from .constants import INTERNAL_ERROR
 from .constants import NOT_FOUND
 from .constants import FORBIDDEN
@@ -473,6 +481,9 @@ class StudentDetailView(View):
             return page_error(request, status_code, error)
         sciences = student.get("science_preferences_detail", [])
         personals = student.get("personal_preferences_detail", [])
+        _, repository, _ = handle_response(
+            get_repository(pk)
+        )
         context = context_student(
             student.get("surname"),
             student.get("name"),
@@ -482,6 +493,7 @@ class StudentDetailView(View):
             sciences,
             personals,
             s_id=pk,
+            repository=repository,
         )
         return render(request, template_path("student_detail"),
                       context=context, status=status_code)
@@ -495,6 +507,7 @@ class StudentDetailView(View):
         email = request.POST.get("email")
         sciences = request.POST.getlist("sciences")
         personals = request.POST.getlist("personals")
+        repository = request.POST.get("repository")
 
         delete = request.POST.get("delete_input")
 
@@ -516,7 +529,7 @@ class StudentDetailView(View):
             return redirect("login")
         elif status_code == codes.bad_request:
             context = context_student(surname, name, patronymic, group,
-                                      email, sciences, personals, detail, pk)
+                                      email, sciences, personals, detail, pk, repository)
             return render(request, template_path("student_detail"),
                           context=context, status=status_code)
         else:
@@ -558,6 +571,40 @@ class StudentNewView(View):
             context = context_student(surname, name, patronymic, group,
                                       email, error_detail=detail)
             return render(request, template_path("student_detail"),
+                          context=context, status=status_code)
+        else:
+            return page_error(request, status_code, error)
+
+
+#########################################################################################
+
+
+class RepositoryView(View):
+    @catch_exceptions()
+    def get(self, request, pk, *args, **kwargs):
+        context = {
+            "id": pk,
+        }
+        return render(request, template_path("repository_create"), context=context)
+
+    @catch_exceptions()
+    def post(self, request, pk, *args, **kwargs):
+        name = request.POST.get("name")
+        key = request.POST.get("key")
+
+        auth_token = get_auth_token(request)
+
+        status_code, detail, error = handle_response(
+            post_repository(pk, name, key, auth_token)
+        )
+
+        if status_code == codes.ok:
+            return redirect("student_detail", pk=pk)
+        elif status_code == codes.unauthorized:
+            return redirect("login")
+        elif status_code == codes.bad_request:
+            context = context_repository(name, key, error_detail=detail, u_id=pk)
+            return render(request, template_path("repository_create"),
                           context=context, status=status_code)
         else:
             return page_error(request, status_code, error)

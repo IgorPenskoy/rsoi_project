@@ -351,7 +351,7 @@ def delete_student(pk, auth_token):
 
 
 def context_student(surname=None, name=None, patronymic=None, group=None, email=None,
-                    sciences=None, personals=None, error_detail=None, s_id=None):
+                    sciences=None, personals=None, error_detail=None, s_id=None, repository=None):
     sciences = sciences or []
     directions_response = get_direction_list()
     directions_response_json = directions_response.json()
@@ -400,6 +400,31 @@ def context_student(surname=None, name=None, patronymic=None, group=None, email=
         "personals": selected_mentors,
         "unselected_personals": unselected_mentors,
         "groups": GROUPS,
+        "repository": repository,
+    }
+    return error_context(context, error_detail)
+
+
+#########################################################################################
+
+
+def get_repository(pk):
+    return get("repository/%s/" % str(pk))
+
+
+def post_repository(pk, name, key, auth_token):
+    request_json = {
+        "repository_name": name,
+        "private_key": key,
+    }
+    return post("repository/%s/" % str(pk), request_json, auth_token)
+
+
+def context_repository(name=None, key=None, error_detail=None, u_id=None):
+    context = {
+        "id": u_id,
+        "name": name or "",
+        "key": key or "",
     }
     return error_context(context, error_detail)
 
