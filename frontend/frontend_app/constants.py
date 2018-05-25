@@ -1,5 +1,5 @@
 SERVICE_UNAVAILABLE = u"Сервис временно недоступен, попробуйте повторить действие позже"
-INTERNAL_ERROR = u"Внутренняя ошибка сервера, попробуйте повторить действие похже"
+INTERNAL_ERROR = u"Внутренняя ошибка сервера, попробуйте повторить действие позже"
 NOT_FOUND = u"Запрашиваемый ресурс не найден"
 FORBIDDEN = u"Нет прав доступа в этот раздел"
 BAD_REQUEST = u"Некорректные данные"
@@ -28,5 +28,4 @@ TITLE_CHOICES = [
     {"value": "CP", "view": u"Кандидат педагогических наук"},
 ]
 
-GROUPS = [str(i) + str(j) for i in range(1, 9) for j in range(1, 7)] +\
-         [str(i) + str(j) + u"М" for i in range(1, 5) for j in range(1, 7)]
+GROUPS = [str(i) + str(j) for i in range(1, 9) for j in range(1, 7)]

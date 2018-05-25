@@ -1,0 +1,90 @@
+{% extends 'frontend_app/base.html' %}
+{% load static %}
+
+{% block content %}
+        <form id="change_form" class="form-horizontal" role="form" method="post">
+            {% csrf_token %}
+            <input hidden id="action_input" name="action_input" value="">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Работа:</label>
+                <div class="col-sm-10">
+                    <select class="form-control col-sm-2" name="work">
+                    {% for w in works %}
+                        {% if w.id == work_id %}
+                        <option value="{{w.id}}" selected>{{w.title}}</option>
+                        {% else %}
+                        <option value="{{w.id}}">{{w.title}}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                    <span class="text-danger">{{work_error}}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Группа:</label>
+                <div class="col-sm-10">
+                    <select class="form-control col-sm-2" name="group">
+                    {% for g in groups %}
+                        {% if g == group %}
+                        <option selected>{{g}}</option>
+                        {% else %}
+                        <option>{{g}}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                    <span class="text-danger">{{group_error}}</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="pull-right">
+                        <a href="/" class="btn btn-default">Назад</a>
+                        <button type="submit" class="btn btn-primary btn-save">Показать</button>
+                        {% if request.COOKIES.group == "admin" %}
+                        <button id="auto_button" type="button" class="btn btn-primary btn-success">Сформировать</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% if distribution %}
+            <div class="form-group">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Студент</th>
+                            <th>Руководитель</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in distribution %}
+                        <tr>
+                            <td hidden></td>
+                            <td>{{ d.student }}</td>
+                            <td>{{ d.mentor }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+            {% if not distribution and work_id and group and not distribution_error %}
+            <div class="form-group content center">
+                <h4 align="center">Для выбранной группы и работы нет распределения</h4>
+            </div>
+            {% endif %}
+            {% if distribution_error %}
+            <div class="form-group content center">
+                <h4 align="center" class="text-danger">{{distribution_error}}</h4>
+            </div>
+            {% endif %}
+        </form>
+{% endblock %}
+{% block scripts %}
+<script>
+    $('#auto_button').on('click', function() {
+            $('#action_input').val("auto");
+            $('#change_form').submit();
+        });
+</script>
+{% endblock %}

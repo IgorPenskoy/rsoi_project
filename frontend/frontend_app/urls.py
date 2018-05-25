@@ -19,4 +19,5 @@ urlpatterns = [
     path('student/new/', views.StudentNewView.as_view(), name='student_new'),
     path('student/<pk>/', views.StudentDetailView.as_view(), name='student_detail'),
     path('repository/<pk>/', views.RepositoryView.as_view(), name='repository'),
+    path('distribution/', views.DistributionView.as_view(), name='distribution'),
 ]

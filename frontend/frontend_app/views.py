@@ -79,6 +79,14 @@ from .functions import context_repository
 #########################################################################################
 
 
+from .functions import get_distribution
+from .functions import post_distribution
+from .functions import context_distribution
+
+
+#########################################################################################
+
+
 from .constants import INTERNAL_ERROR
 from .constants import NOT_FOUND
 from .constants import FORBIDDEN
@@ -608,6 +616,57 @@ class RepositoryView(View):
                           context=context, status=status_code)
         else:
             return page_error(request, status_code, error)
+
+
+#########################################################################################
+
+
+class DistributionView(View):
+    def get(self, request, *args, **kwargs):
+        context = context_distribution()
+        return render(request, template_path("distribution"), context=context)
+
+    def post(self, request, *args, **kwargs):
+        work_id = request.POST.get("work")
+        group = request.POST.get("group")
+        action = request.POST.get("action_input")
+        distribution = request.POST.get("distribution")
+
+        auth_token = get_auth_token(request)
+
+        if action == "auto":
+            status_code, detail, error = handle_response(
+                post_distribution(work_id, group, auth_token)
+            )
+            if status_code == codes.ok:
+                status_code, detail, error = handle_response(
+                    get_distribution(work_id, group)
+                )
+                context = context_distribution(work_id, group, detail)
+                return render(request, template_path("distribution"), context)
+            elif status_code == codes.unauthorized:
+                return redirect("login")
+            elif status_code == codes.bad_request:
+                context = context_distribution(work_id, group, distribution, error=detail)
+                return render(request, template_path("distribution"),
+                              context=context, status=status_code)
+            else:
+                return page_error(request, status_code, error)
+        else:
+            status_code, detail, error = handle_response(
+                get_distribution(work_id, group)
+            )
+            if status_code == codes.ok:
+                context = context_distribution(work_id, group, detail)
+                return render(request, template_path("distribution"), context)
+            elif status_code == codes.unauthorized:
+                return redirect("login")
+            elif status_code == codes.bad_request:
+                context = context_distribution(work_id, group, distribution, error=detail)
+                return render(request, template_path("distribution"),
+                              context=context, status=status_code)
+            else:
+                return page_error(request, status_code, error)
 
 
 #########################################################################################

@@ -432,6 +432,36 @@ def context_repository(name=None, key=None, error_detail=None, u_id=None):
 #########################################################################################
 
 
+def get_distribution(work_id, group):
+    return get("distribution/work/%s/group/%s/" % (str(work_id), str(group)))
+
+
+def post_distribution(work_id, group, auth_token):
+    return post("distribution/work/%s/group/%s/" % (str(work_id), str(group)), auth_token=auth_token)
+
+
+def context_distribution(work_id=None, group=None, distribution=None, error=None):
+    _, works, _ = handle_response(
+        get_work_list()
+    )
+    distribution_error = ""
+    if error and isinstance(error, list):
+        for er in error:
+            distribution_error += er
+    context = {
+        "work_id": work_id,
+        "group": group,
+        "distribution": distribution,
+        "works": works,
+        "groups": GROUPS,
+        "distribution_error": distribution_error,
+    }
+    return context
+
+
+#########################################################################################
+
+
 def check_cookies(request):
     cookies = request.COOKIES
     auth_token = cookies.get("auth_token")
