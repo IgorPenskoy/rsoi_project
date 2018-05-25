@@ -41,7 +41,7 @@
                     <li><a href="/mentor/">Руководители</a></li>
                     <li><a href="/student/">Студенты</a></li>
                     {% if request.COOKIES.group != "admin" %}
-                        <li><a href="/">Профиль {{ request.COOKIES.username }}</a></li>
+                        <li><a href="/{{request.COOKIES.group}}/{{request.COOKIES.user_id}}/">Профиль {{ request.COOKIES.username }}</a></li>
                     {% endif %}
                     {% if request.COOKIES.auth_token %}
                         <li><a href="/logout/">Выйти</a></li>

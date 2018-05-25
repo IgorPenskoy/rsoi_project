@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-    {% if request.COOKIES.group == "admin" %}
+    {% if request.COOKIES.group == "admin" or request.COOKIES.user_id == id %}
         <form id="change_form" class="form-horizontal" role="form" method="post">
             {% csrf_token %}
             <input hidden id="delete_input" name="delete_input" value="">
@@ -12,7 +12,7 @@
                         <a href="{% url 'mentor_list' %}" class="btn btn-default">Назад</a>
                         <button type="submit" class="btn btn-primary btn-save">Сохранить</button>
                     </div>
-                    {% if id %}
+                    {% if id and not request.COOKIES.user_id == id %}
                         <div class="pull-left">
                             <button id="mentor_delete_button" type="button" class="btn btn-danger">Удалить</button>
                         </div>
